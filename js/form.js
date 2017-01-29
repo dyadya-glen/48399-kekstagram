@@ -22,7 +22,7 @@ resizeControlsDec.addEventListener('click', sizeReduction);
 
 resizeControlsInc.addEventListener('click', sizeIncrease);
 
-function openPhotoForm() {
+function openPhotoForm(event) {
   event.preventDefault();
   uploadOverlay.classList.remove('invisible');
   uploadSelectImage.classList.add('invisible');
