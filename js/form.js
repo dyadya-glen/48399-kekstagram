@@ -10,8 +10,6 @@ var resizeControlsDec = uploadOverlay.querySelector('.upload-resize-controls-but
 var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
 var resizeControlsValue = uploadOverlay.querySelector('.upload-resize-controls-value');
 
-resizeControlsValue.value = '100%';
-
 uploadOverlay.classList.add('invisible');
 
 uploadSelectImage.classList.remove('invisible');
@@ -28,6 +26,8 @@ function openPhotoForm() {
   event.preventDefault();
   uploadOverlay.classList.remove('invisible');
   uploadSelectImage.classList.add('invisible');
+  resizeControlsValue.value = '100%';
+  filterImagePreview.style.transform = 'scale(1)';
 }
 
 function closedPhotoForm() {
