@@ -59,7 +59,7 @@ function openFilter(control) {
 }
 
 function sizeReduction() {
-  if (parseFloat(resizeControlsValue.value) > 0) {
+  if (parseFloat(resizeControlsValue.value) > 25) {
     resizeControlsValue.value = parseFloat(resizeControlsValue.value) - 25 + '%';
   }
   var resize = parseFloat(resizeControlsValue.value) / 100;
