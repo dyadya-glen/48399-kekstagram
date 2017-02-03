@@ -3,45 +3,43 @@
 var uploadOverlay = document.querySelector('.upload-overlay');
 var uploadSelectImage = document.getElementById('upload-select-image');
 var uploadFile = document.getElementById('upload-file');
+var uploadControl = document.querySelector('.upload-control');
 var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
 var uploadFilter = document.getElementById('upload-filter');
+var uploadFilterControls = uploadOverlay.querySelector('.upload-filter-controls');
 var uploadFilterAll = uploadFilter.elements['upload-filter'];
 var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
 var resizeControlsDec = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
 var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
 var resizeControlsValue = uploadOverlay.querySelector('.upload-resize-controls-value');
+var ENTER_KEY_CODE = 13;
+var ESCAPE_KEY_CODE = 27;
+var maxResizesImage = 100;
+var minResizesImage = 25;
+var stepResizesImage = 25;
 
-uploadOverlay.classList.add('invisible');
-uploadSelectImage.classList.remove('invisible');
+onClosePhotoForm();
 
-uploadFile.addEventListener('click', openPhotoForm);
-uploadFormCancel.addEventListener('click', closePhotoForm);
-resizeControlsDec.addEventListener('click', sizeReduction);
-resizeControlsInc.addEventListener('click', sizeIncrease);
+uploadFile.addEventListener('click', onOpenPhotoForm);
+uploadFormCancel.addEventListener('click', onClosePhotoForm);
+resizeControlsDec.addEventListener('click', onSizeReduction);
+resizeControlsInc.addEventListener('click', onSizeIncrease);
+uploadFilterControls.addEventListener('click', onСhooseFilter);
+uploadControl.addEventListener('keydown', onKeydownUploadControl);
+uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
 
-for (var j = 0; j < uploadFilterAll.length; j++) {
-  attachHandlers(uploadFilterAll[j]);
+function pressingEnter(event) {
+  return event.keyCode && event.keyCode === ENTER_KEY_CODE;
 }
 
-function openPhotoForm(event) {
-  event.preventDefault();
-  uploadOverlay.classList.remove('invisible');
-  uploadSelectImage.classList.add('invisible');
-  removeFilter();
-  filterImagePreview.classList.add('filter-none');
-  resizesImage(100);
+function pressingEscape(event) {
+  return event.keyCode && event.keyCode === ESCAPE_KEY_CODE;
 }
 
-function closePhotoForm() {
-  uploadOverlay.classList.add('invisible');
-  uploadSelectImage.classList.remove('invisible');
-}
-
-function attachHandlers(control) {
-  control.addEventListener('click', function () {
-    removeFilter();
-    filterImagePreview.classList.add('filter-' + control.value);
-  });
+function setupKeydownHandler(event) {
+  if (pressingEscape(event)) {
+    onClosePhotoForm();
+  }
 }
 
 function removeFilter() {
@@ -50,24 +48,68 @@ function removeFilter() {
   }
 }
 
-function sizeReduction() {
-  var integerResize = parseFloat(resizeControlsValue.value);
-  if (integerResize > 25) {
-    integerResize -= 25;
-    resizesImage(integerResize);
-  }
-}
-
-function sizeIncrease() {
-  var integerResize = parseFloat(resizeControlsValue.value);
-  if (integerResize < 100) {
-    integerResize += 25;
-    resizesImage(integerResize);
-  }
-}
-
 function resizesImage(integerResize) {
-  var resize = integerResize / 100;
+  var resize = integerResize / maxResizesImage;
   filterImagePreview.style.transform = 'scale(' + resize + ')';
   resizeControlsValue.value = integerResize + '%';
+}
+
+function onСhooseFilter(event) {
+  var target = event.target;
+  if (target.classList.contains('upload-filter-preview')) {
+    removeFilter();
+    var filterName = target.parentNode.getAttribute('for').substr(7);
+    filterImagePreview.classList.add(filterName);
+  }
+}
+
+function onKeydownUploadControl(event) {
+  if (pressingEnter(event)) {
+    onOpenPhotoForm(event);
+  }
+}
+
+function onKeydownUploadFormCancel(event) {
+  if (pressingEnter(event)) {
+    onClosePhotoForm();
+  }
+}
+
+function onOpenPhotoForm(event) {
+  event.preventDefault();
+  uploadOverlay.classList.remove('invisible');
+  uploadSelectImage.classList.add('invisible');
+  removeFilter();
+  filterImagePreview.classList.add('filter-none');
+  resizesImage(100);
+  uploadFilterAll[0].checked = true;
+  document.addEventListener('keydown', setupKeydownHandler);
+  if (uploadOverlay.hasAttribute('aria-hidden')) {
+    uploadOverlay.setAttribute('aria-hidden', false);
+  }
+}
+
+function onClosePhotoForm() {
+  uploadOverlay.classList.add('invisible');
+  uploadSelectImage.classList.remove('invisible');
+  document.removeEventListener('keydown', setupKeydownHandler);
+  if (uploadOverlay.hasAttribute('aria-hidden')) {
+    uploadOverlay.setAttribute('aria-hidden', true);
+  }
+}
+
+function onSizeReduction() {
+  var integerResize = parseFloat(resizeControlsValue.value);
+  if (integerResize > minResizesImage) {
+    integerResize -= stepResizesImage;
+    resizesImage(integerResize);
+  }
+}
+
+function onSizeIncrease() {
+  var integerResize = parseFloat(resizeControlsValue.value);
+  if (integerResize < maxResizesImage) {
+    integerResize += stepResizesImage;
+    resizesImage(integerResize);
+  }
 }
