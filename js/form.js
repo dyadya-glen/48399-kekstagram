@@ -25,6 +25,7 @@ uploadFormCancel.addEventListener('click', onClosePhotoForm);
 resizeControlsDec.addEventListener('click', onSizeReduction);
 resizeControlsInc.addEventListener('click', onSizeIncrease);
 uploadFilterControls.addEventListener('click', onСhooseFilter);
+uploadFilterControls.addEventListener('keydown', onKeydownUploadFilter);
 uploadControl.addEventListener('keydown', onKeydownUploadControl);
 uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
 
@@ -44,6 +45,7 @@ function setupKeydownHandler(event) {
 
 function removeFilter() {
   for (var i = 0; i < uploadFilterAll.length; i++) {
+    uploadFilterAll[i].removeAttribute('checked');
     filterImagePreview.classList.remove('filter-' + uploadFilterAll[i].value);
   }
 }
@@ -58,8 +60,9 @@ function onСhooseFilter(event) {
   var target = event.target;
   if (target.classList.contains('upload-filter-preview')) {
     removeFilter();
-    var filterName = target.parentNode.getAttribute('for').substr(7);
-    filterImagePreview.classList.add(filterName);
+    var filter = target.parentNode.previousElementSibling;
+    filter.setAttribute('checked', true);
+    filterImagePreview.classList.add('filter-' + filter.value);
   }
 }
 
@@ -74,6 +77,13 @@ function onKeydownUploadFormCancel(event) {
     onClosePhotoForm();
   }
 }
+
+function onKeydownUploadFilter(event) {
+  if (pressingEnter(event)) {
+    onСhooseFilter(event);
+  }
+}
+
 
 function onOpenPhotoForm(event) {
   event.preventDefault();
