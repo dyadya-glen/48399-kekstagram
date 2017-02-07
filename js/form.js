@@ -14,24 +14,21 @@ var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-but
 var resizeControlsValue = uploadOverlay.querySelector('.upload-resize-controls-value');
 var ENTER_KEY_CODE = 13;
 var ESCAPE_KEY_CODE = 27;
-var maxResizesImage = 100;
-var minResizesImage = 25;
 var stepResizesImage = 25;
 
 onClosePhotoForm();
+window.initializeFilters(uploadFilterControls, filterImagePreview, uploadFilterAll);
+window.createScale(resizeControlsDec, stepResizesImage, resizeControlsValue);
+window.createScale(resizeControlsInc, stepResizesImage, resizeControlsValue);
 
 uploadFile.addEventListener('click', onOpenPhotoForm);
 uploadFormCancel.addEventListener('click', onClosePhotoForm);
-resizeControlsDec.addEventListener('click', onSizeReduction);
-resizeControlsInc.addEventListener('click', onSizeIncrease);
-uploadFilterControls.addEventListener('click', onСhooseFilter);
-uploadFilterControls.addEventListener('keydown', onKeydownUploadFilter);
-uploadControl.addEventListener('keydown', onKeydownUploadControl);
 uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
+uploadControl.addEventListener('keydown', onKeydownUploadControl);
 
-function pressingEnter(event) {
+window.pressingEnter = function (event) {
   return event.keyCode && event.keyCode === ENTER_KEY_CODE;
-}
+};
 
 function pressingEscape(event) {
   return event.keyCode && event.keyCode === ESCAPE_KEY_CODE;
@@ -43,55 +40,25 @@ function setupKeydownHandler(event) {
   }
 }
 
-function removeFilter() {
-  for (var i = 0; i < uploadFilterAll.length; i++) {
-    uploadFilterAll[i].removeAttribute('checked');
-    filterImagePreview.classList.remove('filter-' + uploadFilterAll[i].value);
-  }
-}
-
-function resizesImage(integerResize) {
-  var resize = integerResize / maxResizesImage;
-  filterImagePreview.style.transform = 'scale(' + resize + ')';
-  resizeControlsValue.value = integerResize + '%';
-}
-
-function onСhooseFilter(event) {
-  var target = event.target;
-  if (target.classList.contains('upload-filter-preview')) {
-    removeFilter();
-    var filter = target.parentNode.previousElementSibling;
-    filter.setAttribute('checked', true);
-    filterImagePreview.classList.add('filter-' + filter.value);
-  }
-}
-
 function onKeydownUploadControl(event) {
-  if (pressingEnter(event)) {
+  if (window.pressingEnter(event)) {
     onOpenPhotoForm(event);
   }
 }
 
 function onKeydownUploadFormCancel(event) {
-  if (pressingEnter(event)) {
+  if (window.pressingEnter(event)) {
     onClosePhotoForm();
   }
 }
-
-function onKeydownUploadFilter(event) {
-  if (pressingEnter(event)) {
-    onСhooseFilter(event);
-  }
-}
-
 
 function onOpenPhotoForm(event) {
   event.preventDefault();
   uploadOverlay.classList.remove('invisible');
   uploadSelectImage.classList.add('invisible');
-  removeFilter();
+  window.removeFilter(filterImagePreview, uploadFilterAll);
   filterImagePreview.classList.add('filter-none');
-  resizesImage(100);
+  resizeControlsValue.value = '100%';
   uploadFilterAll[0].checked = true;
   document.addEventListener('keydown', setupKeydownHandler);
   if (uploadOverlay.hasAttribute('aria-hidden')) {
@@ -105,21 +72,5 @@ function onClosePhotoForm() {
   document.removeEventListener('keydown', setupKeydownHandler);
   if (uploadOverlay.hasAttribute('aria-hidden')) {
     uploadOverlay.setAttribute('aria-hidden', true);
-  }
-}
-
-function onSizeReduction() {
-  var integerResize = parseFloat(resizeControlsValue.value);
-  if (integerResize > minResizesImage) {
-    integerResize -= stepResizesImage;
-    resizesImage(integerResize);
-  }
-}
-
-function onSizeIncrease() {
-  var integerResize = parseFloat(resizeControlsValue.value);
-  if (integerResize < maxResizesImage) {
-    integerResize += stepResizesImage;
-    resizesImage(integerResize);
   }
 }
