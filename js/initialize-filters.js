@@ -1,17 +1,16 @@
 'use strict';
 
-window.initializeFilters = function () {
+window.initializeFilters = (function () {
   var uploadFilterControls = document.querySelector('.upload-filter-controls');
   var filterImagePreview = document.querySelector('.filter-image-preview');
   var currentFilterClass = 'filter-none';
   var currentFilter = null;
-  var ENTER_KEY_CODE = 13;
 
   uploadFilterControls.addEventListener('click', onSelectFilter);
   uploadFilterControls.addEventListener('keydown', onKeydownUploadFilter);
 
   function onKeydownUploadFilter(event) {
-    if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
+    if (window.downloadManagement.isEnterKey(event)) {
       selectFilter(event.target);
     }
   }
@@ -37,4 +36,4 @@ window.initializeFilters = function () {
     currentFilter = filter;
     filterImagePreview.classList.add(currentFilterClass);
   }
-};
+})();
