@@ -1,12 +1,18 @@
 'use strict';
 
 window.createScale = (function () {
-  function changeScale(element, step, defaultValue) {
-    var MAX_RESIZE = 100;
-    var MIN_RESIZE = 25;
-    var filterImagePreview = document.querySelector('.filter-image-preview');
-    var resizeControlsValue = document.querySelector('.upload-resize-controls-value');
+  var MAX_RESIZE = 100;
+  var MIN_RESIZE = 25;
+  var filterImagePreview = document.querySelector('.filter-image-preview');
+  var resizeControlsValue = document.querySelector('.upload-resize-controls-value');
 
+  function resizesImage(integerResize) {
+    var resize = integerResize / MAX_RESIZE;
+    filterImagePreview.style.transform = 'scale(' + resize + ')';
+    resizeControlsValue.value = integerResize + '%';
+  }
+
+  return function (element, step, defaultValue) {
     resizeControlsValue.value = defaultValue;
     element.addEventListener('click', onResizeControls);
 
@@ -27,12 +33,5 @@ window.createScale = (function () {
 
       resizesImage(integerResize);
     }
-
-    function resizesImage(integerResize) {
-      var resize = integerResize / MAX_RESIZE;
-      filterImagePreview.style.transform = 'scale(' + resize + ')';
-      resizeControlsValue.value = integerResize + '%';
-    }
-  }
-  return changeScale;
+  };
 })();
