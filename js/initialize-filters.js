@@ -5,12 +5,13 @@ window.initializeFilters = (function () {
   var filterImagePreview = document.querySelector('.filter-image-preview');
   var currentFilterClass = 'filter-none';
   var currentFilter = null;
+  var ENTER_KEY_CODE = 13;
 
   uploadFilterControls.addEventListener('click', onSelectFilter);
   uploadFilterControls.addEventListener('keydown', onKeydownUploadFilter);
 
   function onKeydownUploadFilter(event) {
-    if (window.downloadManagement.isEnterKey(event)) {
+    if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
       selectFilter(event.target);
     }
   }

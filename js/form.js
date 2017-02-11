@@ -1,6 +1,6 @@
 'use strict';
 
-window.downloadManagement = (function () {
+(function () {
   var uploadOverlay = document.querySelector('.upload-overlay');
   var uploadSelectImage = document.getElementById('upload-select-image');
   var uploadFile = document.getElementById('upload-file');
@@ -9,7 +9,7 @@ window.downloadManagement = (function () {
   var resizeControlsDec = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
   var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
 
-  var DEFAULT_VALUE = '100%';
+  var DEFAULT_VALUE = 100;
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
   var STEP_RESIZE = 25;
@@ -76,8 +76,4 @@ window.downloadManagement = (function () {
     var pressed = uploadOverlay.getAttribute('aria-hidden');
     uploadOverlay.setAttribute('aria-hidden', !pressed);
   }
-  return {
-    isEnterKey: isEnterKey,
-    isEscapeKey: isEscapeKey
-  };
 })();

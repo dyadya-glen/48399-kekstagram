@@ -13,7 +13,7 @@ window.createScale = (function () {
   }
 
   return function (element, step, defaultValue) {
-    resizeControlsValue.value = defaultValue;
+    resizeControlsValue.value = defaultValue + '%';
     element.addEventListener('click', onResizeControls);
 
     function onResizeControls() {
