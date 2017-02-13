@@ -11,9 +11,10 @@
   var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
   var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
   var uploadFilterControls = uploadOverlay.querySelector('.upload-filter-controls');
+
   var currentFilterClass = 'filter-none';
   var currentFilter = null;
-  var callback = null;
+  var needsFocus = false;
 
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
@@ -51,8 +52,8 @@
 
   uploadFile.addEventListener('click', onOpenPhotoForm);
   uploadFormCancel.addEventListener('click', onClosePhotoForm);
-  uploadControl.addEventListener('keydown', onKeydownUploadControl);// открывает форму по ENTER
-  uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);// закрывает форму по ENTER
+  uploadControl.addEventListener('keydown', onKeydownUploadControl);
+  uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
 
   function isEnterKey(event) {
     return event.keyCode && event.keyCode === ENTER_KEY_CODE;
@@ -74,9 +75,7 @@
     }
 
     openPhotoForm();
-    callback = function () {
-      uploadControl.focus();
-    };
+    needsFocus = true;
   }
 
   function onKeydownUploadFormCancel(event) {
@@ -88,13 +87,11 @@
   function onOpenPhotoForm(event) {
     event.preventDefault();
     openPhotoForm();
-    callback = null;
   }
 
   function onClosePhotoForm(event) {
     event.preventDefault();
     closePhotoForm();
-    callback = null;
   }
 
   function openPhotoForm() {
@@ -102,10 +99,6 @@
     uploadSelectImage.classList.add('invisible');
     document.addEventListener('keydown', onSetupKeydownHandler);
     toggleAriaHidden();
-
-    if (typeof callback === 'function') {
-      callback();
-    }
   }
 
   function closePhotoForm() {
@@ -114,8 +107,9 @@
     document.removeEventListener('keydown', onSetupKeydownHandler);
     toggleAriaHidden();
 
-    if (typeof callback === 'function') {
-      callback();
+    if (needsFocus) {
+      uploadControl.focus();
+      needsFocus = false;
     }
   }
 
