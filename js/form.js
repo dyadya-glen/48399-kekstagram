@@ -6,11 +6,8 @@
   var uploadFile = document.getElementById('upload-file');
   var uploadControl = document.querySelector('.upload-control');
   var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
-  var resizeControlsValue = uploadOverlay.querySelector('.upload-resize-controls-value');
-  var resizeControlsDec = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
-  var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
+  var uploadResizeControls = uploadOverlay.querySelector('.upload-resize-controls');
   var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
-  var uploadFilterControls = uploadOverlay.querySelector('.upload-filter-controls');
 
   var currentFilterClass = 'filter-none';
   var currentFilter = null;
@@ -21,16 +18,17 @@
   var DEFAULT_VALUE = 100;
   var STEP_RESIZE = 25;
 
-  window.createScale(resizeControlsDec, resizeControlsValue, STEP_RESIZE, DEFAULT_VALUE, resizesImage);
-  window.createScale(resizeControlsInc, resizeControlsValue, STEP_RESIZE, DEFAULT_VALUE, resizesImage);
+  uploadFile.addEventListener('click', onOpenPhotoForm);
+  uploadFormCancel.addEventListener('click', onClosePhotoForm);
+  uploadControl.addEventListener('keydown', onKeydownUploadPhotoForm);
+  uploadFormCancel.addEventListener('keydown', onKeydownClosePhotoForm);
 
-  function resizesImage(integerResize) {
-    var resize = integerResize / DEFAULT_VALUE;
+  window.initializeScale(uploadResizeControls, STEP_RESIZE, DEFAULT_VALUE, resizesImage);
+  window.initializeFilters(selectFilter);
+
+  function resizesImage(resize) {
     filterImagePreview.style.transform = 'scale(' + resize + ')';
-    resizeControlsValue.value = integerResize + '%';
   }
-
-  window.initializeFilters(uploadFilterControls, selectFilter);
 
   function selectFilter(element) {
     if (!element.classList.contains('upload-filter-preview')) {
@@ -50,11 +48,6 @@
     filterImagePreview.classList.add(currentFilterClass);
   }
 
-  uploadFile.addEventListener('click', onOpenPhotoForm);
-  uploadFormCancel.addEventListener('click', onClosePhotoForm);
-  uploadControl.addEventListener('keydown', onKeydownUploadControl);
-  uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
-
   function isEnterKey(event) {
     return event.keyCode && event.keyCode === ENTER_KEY_CODE;
   }
@@ -69,7 +62,7 @@
     }
   }
 
-  function onKeydownUploadControl(event) {
+  function onKeydownUploadPhotoForm(event) {
     if (!isEnterKey(event)) {
       return;
     }
@@ -78,7 +71,7 @@
     needsFocus = true;
   }
 
-  function onKeydownUploadFormCancel(event) {
+  function onKeydownClosePhotoForm(event) {
     if (isEnterKey(event)) {
       closePhotoForm();
     }
