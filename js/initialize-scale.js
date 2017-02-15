@@ -2,15 +2,18 @@
 
 window.initializeScale = (function () {
   return function (element, step, defaultValue, callback) {
-    var value = element.querySelector('.upload-resize-controls-value');
+    var valueOfImageSize = element.querySelector('.upload-resize-controls-value');
+    var MAX_RESIZE = 100;
+    var MIN_RESIZE = 25;
 
-    value.value = defaultValue + '%';
+    valueOfImageSize.value = defaultValue + '%';
+
+    callback(defaultValue / MAX_RESIZE);
+
     element.addEventListener('click', onResizeControls);
 
     function onResizeControls(event) {
-      var MAX_RESIZE = 100;
-      var MIN_RESIZE = 25;
-      var integerResize = parseFloat(value.value);
+      var integerResize = parseFloat(valueOfImageSize.value);
       element = event.target;
 
       if (element.classList.contains('upload-resize-controls-button-inc')) {
@@ -25,8 +28,8 @@ window.initializeScale = (function () {
         }
       }
 
-      var resize = integerResize / defaultValue;
-      value.value = integerResize + '%';
+      var resize = integerResize / MAX_RESIZE;
+      valueOfImageSize.value = integerResize + '%';
 
       if (typeof callback === 'function') {
         callback(resize);

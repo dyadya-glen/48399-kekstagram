@@ -8,9 +8,6 @@
   var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
   var uploadResizeControls = uploadOverlay.querySelector('.upload-resize-controls');
   var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
-
-  var currentFilterClass = 'filter-none';
-  var currentFilter = null;
   var needsFocus = false;
 
   var ENTER_KEY_CODE = 13;
@@ -20,32 +17,18 @@
 
   uploadFile.addEventListener('click', onOpenPhotoForm);
   uploadFormCancel.addEventListener('click', onClosePhotoForm);
-  uploadControl.addEventListener('keydown', onKeydownUploadPhotoForm);
-  uploadFormCancel.addEventListener('keydown', onKeydownClosePhotoForm);
+  uploadControl.addEventListener('keydown', onOpenByEnter);
+  uploadFormCancel.addEventListener('keydown', onCloseByEnter);
 
-  window.initializeScale(uploadResizeControls, STEP_RESIZE, DEFAULT_VALUE, resizesImage);
-  window.initializeFilters(selectFilter);
+  window.initializeScale(uploadResizeControls, STEP_RESIZE, DEFAULT_VALUE, applyScale);
+  window.initializeFilters(applyFilter);
 
-  function resizesImage(resize) {
-    filterImagePreview.style.transform = 'scale(' + resize + ')';
+  function applyFilter(property) {
+    filterImagePreview.style.filter = property;
   }
 
-  function selectFilter(element) {
-    if (!element.classList.contains('upload-filter-preview')) {
-      return;
-    }
-
-    filterImagePreview.classList.remove(currentFilterClass);
-    if (currentFilter) {
-      currentFilter.removeAttribute('checked');
-    }
-
-    var filter = element.parentNode.previousElementSibling;
-    filter.setAttribute('checked', true);
-
-    currentFilterClass = 'filter-' + filter.value;
-    currentFilter = filter;
-    filterImagePreview.classList.add(currentFilterClass);
+  function applyScale(resize) {
+    filterImagePreview.style.transform = 'scale(' + resize + ')';
   }
 
   function isEnterKey(event) {
@@ -62,16 +45,16 @@
     }
   }
 
-  function onKeydownUploadPhotoForm(event) {
+  function onOpenByEnter(event) {
     if (!isEnterKey(event)) {
       return;
     }
 
-    openPhotoForm();
+    open();
     needsFocus = true;
   }
 
-  function onKeydownClosePhotoForm(event) {
+  function onCloseByEnter(event) {
     if (isEnterKey(event)) {
       closePhotoForm();
     }
@@ -79,7 +62,7 @@
 
   function onOpenPhotoForm(event) {
     event.preventDefault();
-    openPhotoForm();
+    open();
   }
 
   function onClosePhotoForm(event) {
@@ -87,7 +70,7 @@
     closePhotoForm();
   }
 
-  function openPhotoForm() {
+  function open() {
     uploadOverlay.classList.remove('invisible');
     uploadSelectImage.classList.add('invisible');
     document.addEventListener('keydown', onSetupKeydownHandler);
