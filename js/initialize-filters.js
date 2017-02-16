@@ -2,39 +2,45 @@
 
 window.initializeFilters = (function () {
   var uploadFilterControls = document.querySelector('.upload-filter-controls');
-  var filterImagePreview = document.querySelector('.filter-image-preview');
-  var currentFilterClass = 'filter-none';
-  var currentFilter = null;
   var ENTER_KEY_CODE = 13;
 
-  uploadFilterControls.addEventListener('click', onSelectFilter);
-  uploadFilterControls.addEventListener('keydown', onKeydownUploadFilter);
+  var filters = {
+    none: 'none',
+    chrome: 'grayscale(1)',
+    sepia: 'sepia(1)',
+    marvin: 'invert(100%)',
+    phobos: 'contrast(1.1) brightness(1.3) saturate(2.4) sepia(0.4) hue-rotate(-240deg)',
+    heat: 'contrast(1.1) brightness(1.3) saturate(2.4) sepia(0.4)'
+  };
 
-  function onKeydownUploadFilter(event) {
-    if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
-      selectFilter(event.target);
-    }
-  }
+  return function (callback) {
+    uploadFilterControls.addEventListener('click', onSelectFilter);
+    uploadFilterControls.addEventListener('keydown', onSelectFilterByEnter);
 
-  function onSelectFilter(event) {
-    selectFilter(event.target);
-  }
-
-  function selectFilter(element) {
-    if (!element.classList.contains('upload-filter-preview')) {
-      return;
-    }
-
-    filterImagePreview.classList.remove(currentFilterClass);
-    if (currentFilter) {
-      currentFilter.removeAttribute('checked');
+    function onSelectFilterByEnter(event) {
+      if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
+        applyFilter(event.target);
+      }
     }
 
-    var filter = element.parentNode.previousElementSibling;
-    filter.setAttribute('checked', true);
+    function onSelectFilter(event) {
+      applyFilter(event.target);
+    }
 
-    currentFilterClass = 'filter-' + filter.value;
-    currentFilter = filter;
-    filterImagePreview.classList.add(currentFilterClass);
-  }
+    function applyFilter(element) {
+      if (!element.classList.contains('upload-filter-preview')) {
+        return;
+      }
+
+      var filter = filters[element.parentNode.previousElementSibling.value];
+
+      if (!filter) {
+        return;
+      }
+
+      if (typeof callback === 'function') {
+        callback(filter);
+      }
+    }
+  };
 })();

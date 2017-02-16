@@ -6,21 +6,30 @@
   var uploadFile = document.getElementById('upload-file');
   var uploadControl = document.querySelector('.upload-control');
   var uploadFormCancel = uploadOverlay.querySelector('.upload-form-cancel');
-  var resizeControlsDec = uploadOverlay.querySelector('.upload-resize-controls-button-dec');
-  var resizeControlsInc = uploadOverlay.querySelector('.upload-resize-controls-button-inc');
+  var uploadResizeControls = uploadOverlay.querySelector('.upload-resize-controls');
+  var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
+  var needsFocus = false;
 
-  var DEFAULT_VALUE = 100;
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
+  var DEFAULT_VALUE = 100;
   var STEP_RESIZE = 25;
-
-  window.createScale(resizeControlsDec, STEP_RESIZE, DEFAULT_VALUE);
-  window.createScale(resizeControlsInc, STEP_RESIZE, DEFAULT_VALUE);
 
   uploadFile.addEventListener('click', onOpenPhotoForm);
   uploadFormCancel.addEventListener('click', onClosePhotoForm);
-  uploadFormCancel.addEventListener('keydown', onKeydownUploadFormCancel);
-  uploadControl.addEventListener('keydown', onKeydownUploadControl);
+  uploadControl.addEventListener('keydown', onOpenByEnter);
+  uploadFormCancel.addEventListener('keydown', onCloseByEnter);
+
+  window.initializeScale(uploadResizeControls, STEP_RESIZE, DEFAULT_VALUE, applyScale);
+  window.initializeFilters(applyFilter);
+
+  function applyFilter(property) {
+    filterImagePreview.style.filter = property;
+  }
+
+  function applyScale(resize) {
+    filterImagePreview.style.transform = 'scale(' + resize + ')';
+  }
 
   function isEnterKey(event) {
     return event.keyCode && event.keyCode === ENTER_KEY_CODE;
@@ -36,13 +45,16 @@
     }
   }
 
-  function onKeydownUploadControl(event) {
-    if (isEnterKey(event)) {
-      openPhotoForm();
+  function onOpenByEnter(event) {
+    if (!isEnterKey(event)) {
+      return;
     }
+
+    open();
+    needsFocus = true;
   }
 
-  function onKeydownUploadFormCancel(event) {
+  function onCloseByEnter(event) {
     if (isEnterKey(event)) {
       closePhotoForm();
     }
@@ -50,7 +62,7 @@
 
   function onOpenPhotoForm(event) {
     event.preventDefault();
-    openPhotoForm();
+    open();
   }
 
   function onClosePhotoForm(event) {
@@ -58,7 +70,7 @@
     closePhotoForm();
   }
 
-  function openPhotoForm() {
+  function open() {
     uploadOverlay.classList.remove('invisible');
     uploadSelectImage.classList.add('invisible');
     document.addEventListener('keydown', onSetupKeydownHandler);
@@ -70,6 +82,11 @@
     uploadSelectImage.classList.remove('invisible');
     document.removeEventListener('keydown', onSetupKeydownHandler);
     toggleAriaHidden();
+
+    if (needsFocus) {
+      uploadControl.focus();
+      needsFocus = false;
+    }
   }
 
   function toggleAriaHidden() {
