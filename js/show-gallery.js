@@ -3,10 +3,7 @@
 window.showGallery = (function () {
   var overlay = document.querySelector('.gallery-overlay');
   var overlayClose = overlay.querySelector('.gallery-overlay-close');
-
   var image = overlay.querySelector('.gallery-overlay-image');
-  // var like = overlay.querySelector('.gallery-overlay-controls-like');
-  // var comments = overlay.querySelector('.gallery-overlay-controls-comments');
   var like = overlay.querySelector('.likes-count');
   var comments = overlay.querySelector('.comments-count');
 
