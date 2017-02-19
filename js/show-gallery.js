@@ -10,7 +10,6 @@ window.showGallery = (function () {
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
 
-
   overlayClose.addEventListener('click', onCloseGallery);
   overlayClose.addEventListener('keydown', onCloseGalleryByEnter);
 

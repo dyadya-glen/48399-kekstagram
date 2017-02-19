@@ -9,14 +9,13 @@
 
   function onLoad(event) {
     var target = event.target;
+    var pictures = target.response;
+    var fragment = document.createDocumentFragment();
+
     if (target.status !== 200) {
       document.write(target.status + ': ' + target.statusText);
       return;
     }
-
-    var pictures = target.response;
-
-    var fragment = document.createDocumentFragment();
 
     pictures.forEach(function (picture) {
       var content = picturesEl.cloneNode(true);
@@ -28,13 +27,12 @@
 
       fragment.appendChild(content);
 
-
       function onOpen(evt) {
         evt.preventDefault();
         window.showGallery(picture);
       }
     });
-    picturesContainer.appendChild(fragment);
 
+    picturesContainer.appendChild(fragment);
   }
 })();
