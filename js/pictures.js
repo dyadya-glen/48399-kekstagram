@@ -2,7 +2,8 @@
 
 (function () {
   var pictureTemplate = document.querySelector('#picture-template');
-  var picturesEl = document.querySelector('.pictures');
+  var picturesEl = pictureTemplate.content.querySelector('.picture');
+  var picturesContainer = document.querySelector('.pictures');
 
   window.load('https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data', onLoad);
 
@@ -15,29 +16,25 @@
 
     var pictures = target.response;
 
+    var fragment = document.createDocumentFragment();
+
     pictures.forEach(function (picture) {
-      var content = pictureTemplate.content.cloneNode(true);
+      var content = picturesEl.cloneNode(true);
 
-      var img = content.querySelector('img');
-      img.src = picture.url;
+      content.querySelector('img').src = picture.url;
+      content.querySelector('.picture-likes').textContent = picture.likes;
+      content.querySelector('.picture-comments').textContent = picture.comments.length;
+      content.addEventListener('click', onOpen);
 
-      var likesEl = content.querySelector('.picture-likes');
-      likesEl.textContent = picture.likes;
+      fragment.appendChild(content);
 
-      var commentsEl = content.querySelector('.picture-comments');
-      commentsEl.textContent = picture.comments.length;
-
-      var rootEl = content.querySelector('.picture');
-      rootEl.addEventListener('click', onOpen);
 
       function onOpen(evt) {
         evt.preventDefault();
         window.showGallery(picture);
       }
-
-      picturesEl.appendChild(content);
     });
+    picturesContainer.appendChild(fragment);
 
-    document.body.appendChild(picturesEl);
   }
 })();
