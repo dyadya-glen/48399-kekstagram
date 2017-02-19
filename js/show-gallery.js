@@ -2,7 +2,7 @@
 
 window.showGallery = (function () {
   var overlay = document.querySelector('.gallery-overlay');
-  var overlayClose = overlay.querySelector('.gallery-overlay-close');
+  var closeButton = overlay.querySelector('.gallery-overlay-close');
   var image = overlay.querySelector('.gallery-overlay-image');
   var like = overlay.querySelector('.likes-count');
   var comments = overlay.querySelector('.comments-count');
@@ -10,18 +10,18 @@ window.showGallery = (function () {
   var ENTER_KEY_CODE = 13;
   var ESCAPE_KEY_CODE = 27;
 
-  overlayClose.addEventListener('click', onCloseGallery);
-  overlayClose.addEventListener('keydown', onCloseGalleryByEnter);
+  closeButton.addEventListener('click', onCloseGallery);
+  closeButton.addEventListener('keydown', onCloseGalleryByEnter);
 
   function onCloseGalleryByEnter(event) {
     if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
-      closeGallery(event.target);
+      closeGallery();
     }
   }
 
-  function onSetupKeydownHandler(event) {
+  function onCloseGalleryByEscape(event) {
     if (event.keyCode && event.keyCode === ESCAPE_KEY_CODE) {
-      onCloseGallery();
+      closeGallery();
     }
   }
 
@@ -31,15 +31,15 @@ window.showGallery = (function () {
 
   function closeGallery() {
     overlay.classList.add('invisible');
-    document.removeEventListener('keydown', onSetupKeydownHandler);
+    document.removeEventListener('keydown', onCloseGalleryByEscape);
   }
 
   return function (data) {
-    document.addEventListener('keydown', onSetupKeydownHandler);
+    document.addEventListener('keydown', onCloseGalleryByEscape);
     overlay.classList.remove('invisible');
     image.src = data.url;
     like.textContent = data.likes;
     comments.textContent = data.comments.length;
-    overlayClose.focus();
+    closeButton.focus();
   };
 })();
