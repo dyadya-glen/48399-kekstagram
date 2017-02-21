@@ -7,13 +7,15 @@
   var filters = document.querySelector('.filters');
   var pictures = [];
 
+  filters.classList.remove('hidden');
+
   window.load('https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data', onLoad);
 
   function getRandomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
   }
 
-  function sortPicturesRandom(array) {
+  function sortByNew(array) {
     var newArray = array.slice();
     var sorted = [];
 
@@ -29,8 +31,8 @@
     return sorted;
   }
 
-  function sortPicturesComments(array) {
-    var sorted = array.slice(0);
+  function sortByDiscussed(array) {
+    var sorted = array.slice();
     sorted.sort(function (a, b) {
       return b.comments.length - a.comments.length;
     });
@@ -38,7 +40,7 @@
     return sorted;
   }
 
-  function createsElement(array) {
+  function drawPictures(array) {
     var fragment = document.createDocumentFragment();
 
     array.forEach(function (picture) {
@@ -69,14 +71,12 @@
       return;
     }
 
-    createsElement(pictures);
+    drawPictures(pictures);
 
-    filters.addEventListener('click', onFiltersElements);
+    filters.addEventListener('click', onSelectFilter);
   }
 
-  filters.classList.remove('hidden');
-
-  function onFiltersElements(e) {
+  function onSelectFilter(e) {
     var filterEl = e.target;
 
     if (!filterEl.classList.contains('filters-radio')) {
@@ -87,13 +87,13 @@
 
     switch (filterEl.value) {
       case 'popular':
-        createsElement(pictures);
+        drawPictures(pictures);
         break;
       case 'new':
-        createsElement(sortPicturesRandom(pictures));
+        drawPictures(sortByNew(pictures));
         break;
       case 'discussed':
-        createsElement(sortPicturesComments(pictures));
+        drawPictures(sortByDiscussed(pictures));
         break;
     }
   }
