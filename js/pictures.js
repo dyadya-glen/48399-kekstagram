@@ -4,20 +4,44 @@
   var pictureTemplate = document.querySelector('#picture-template');
   var picturesEl = pictureTemplate.content.querySelector('.picture');
   var picturesContainer = document.querySelector('.pictures');
+  var filters = document.querySelector('.filters');
+  var pictures = [];
 
   window.load('https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data', onLoad);
 
-  function onLoad(event) {
-    var target = event.target;
-    var pictures = target.response;
-    var fragment = document.createDocumentFragment();
+  function getRandomElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 
-    if (target.status !== 200) {
-      document.write(target.status + ': ' + target.statusText);
-      return;
+  function sortByNew(array) {
+    var newArray = array.slice();
+    var sorted = [];
+
+    while (sorted.length < 10) {
+      var element = getRandomElement(newArray);
+      var index = sorted.indexOf(element);
+
+      if (index === -1) {
+        sorted.push(element);
+      }
     }
 
-    pictures.forEach(function (picture) {
+    return sorted;
+  }
+
+  function sortByDiscussed(array) {
+    var sorted = array.slice();
+    sorted.sort(function (a, b) {
+      return b.comments.length - a.comments.length;
+    });
+
+    return sorted;
+  }
+
+  function drawPictures(array) {
+    var fragment = document.createDocumentFragment();
+
+    array.forEach(function (picture) {
       var content = picturesEl.cloneNode(true);
 
       content.querySelector('img').src = picture.url;
@@ -34,5 +58,43 @@
     });
 
     picturesContainer.appendChild(fragment);
+  }
+
+  function onLoad(event) {
+    var target = event.target;
+    pictures = target.response;
+
+    if (target.status !== 200) {
+      document.write(target.status + ': ' + target.statusText);
+      return;
+    }
+
+    drawPictures(pictures);
+
+    filters.classList.remove('hidden');
+
+    filters.addEventListener('click', onSelectFilter);
+  }
+
+  function onSelectFilter(e) {
+    var filterEl = e.target;
+
+    if (!filterEl.classList.contains('filters-radio')) {
+      return;
+    }
+
+    picturesContainer.innerHTML = '';
+
+    switch (filterEl.value) {
+      case 'popular':
+        drawPictures(pictures);
+        break;
+      case 'new':
+        drawPictures(sortByNew(pictures));
+        break;
+      case 'discussed':
+        drawPictures(sortByDiscussed(pictures));
+        break;
+    }
   }
 })();
