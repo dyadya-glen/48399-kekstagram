@@ -7,8 +7,6 @@
   var filters = document.querySelector('.filters');
   var pictures = [];
 
-  filters.classList.remove('hidden');
-
   window.load('https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data', onLoad);
 
   function getRandomElement(array) {
@@ -72,6 +70,8 @@
     }
 
     drawPictures(pictures);
+
+    filters.classList.remove('hidden');
 
     filters.addEventListener('click', onSelectFilter);
   }
