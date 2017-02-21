@@ -5,6 +5,7 @@
   var picturesEl = pictureTemplate.content.querySelector('.picture');
   var picturesContainer = document.querySelector('.pictures');
   var filters = document.querySelector('.filters');
+  var pictures = [];
 
   window.load('https://intensive-javascript-server-myophkugvq.now.sh/kekstagram/data', onLoad);
 
@@ -13,16 +14,14 @@
   }
 
   function sortPicturesRandom(array) {
+    var newArray = array.slice();
     var sorted = [];
 
     while (sorted.length < 10) {
-      var element = getRandomElement(array);
+      var element = getRandomElement(newArray);
+      var index = sorted.indexOf(element);
 
-      var flag = sorted.some(function (value) {
-        return value === element;
-      });
-
-      if (!flag) {
+      if (index === -1) {
         sorted.push(element);
       }
     }
@@ -30,26 +29,19 @@
     return sorted;
   }
 
-  var sortPicturesComments = function (array) {
+  function sortPicturesComments(array) {
     var sorted = array.slice(0);
-    sorted.sort(function (itemA, itemB) {
-      return itemB.comments.length - itemA.comments.length;
+    sorted.sort(function (a, b) {
+      return b.comments.length - a.comments.length;
     });
 
     return sorted;
-  };
+  }
 
-  function onLoad(event) {
-    var target = event.target;
-    var pictures = target.response;
+  function createsElement(array) {
     var fragment = document.createDocumentFragment();
 
-    if (target.status !== 200) {
-      document.write(target.status + ': ' + target.statusText);
-      return;
-    }
-
-    function createsElement(picture) {
+    array.forEach(function (picture) {
       var content = picturesEl.cloneNode(true);
 
       content.querySelector('img').src = picture.url;
@@ -63,41 +55,46 @@
         evt.preventDefault();
         window.showGallery(picture);
       }
+    });
+
+    picturesContainer.appendChild(fragment);
+  }
+
+  function onLoad(event) {
+    var target = event.target;
+    pictures = target.response;
+
+    if (target.status !== 200) {
+      document.write(target.status + ': ' + target.statusText);
+      return;
     }
 
-    function changeFilter() {
-      picturesContainer.innerHTML = '';
-      picturesContainer.appendChild(fragment);
-    }
-
-    pictures.forEach(createsElement);
-
-    changeFilter();
-
-    function onFiltersElements(e) {
-      var filterEl = e.target;
-
-      if (!filterEl.classList.contains('filters-radio')) {
-        return;
-      }
-
-      switch (filterEl.value) {
-        case 'popular':
-          pictures.forEach(createsElement);
-          break;
-        case 'new':
-          sortPicturesRandom(pictures).forEach(createsElement);
-          break;
-        case 'discussed':
-          sortPicturesComments(pictures).forEach(createsElement);
-          break;
-      }
-
-      changeFilter();
-    }
+    createsElement(pictures);
 
     filters.addEventListener('click', onFiltersElements);
+  }
 
-    filters.classList.remove('hidden');
+  filters.classList.remove('hidden');
+
+  function onFiltersElements(e) {
+    var filterEl = e.target;
+
+    if (!filterEl.classList.contains('filters-radio')) {
+      return;
+    }
+
+    picturesContainer.innerHTML = '';
+
+    switch (filterEl.value) {
+      case 'popular':
+        createsElement(pictures);
+        break;
+      case 'new':
+        createsElement(sortPicturesRandom(pictures));
+        break;
+      case 'discussed':
+        createsElement(sortPicturesComments(pictures));
+        break;
+    }
   }
 })();
