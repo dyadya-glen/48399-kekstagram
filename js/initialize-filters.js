@@ -19,6 +19,7 @@ window.initializeFilters = (function () {
 
     function onSelectFilterByEnter(event) {
       if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
+        event.preventDefault();
         applyFilter(event.target);
       }
     }
