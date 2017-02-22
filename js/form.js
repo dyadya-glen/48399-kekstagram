@@ -10,8 +10,6 @@
   var filterImagePreview = uploadOverlay.querySelector('.filter-image-preview');
   var needsFocus = false;
 
-  var ENTER_KEY_CODE = 13;
-  var ESCAPE_KEY_CODE = 27;
   var DEFAULT_VALUE = 100;
   var STEP_RESIZE = 25;
 
@@ -31,22 +29,14 @@
     filterImagePreview.style.transform = 'scale(' + resize + ')';
   }
 
-  function isEnterKey(event) {
-    return event.keyCode && event.keyCode === ENTER_KEY_CODE;
-  }
-
-  function isEscapeKey(event) {
-    return event.keyCode && event.keyCode === ESCAPE_KEY_CODE;
-  }
-
   function onSetupKeydownHandler(event) {
-    if (isEscapeKey(event)) {
+    if (window.utils.isEscapeKey(event)) {
       closePhotoForm();
     }
   }
 
   function onOpenByEnter(event) {
-    if (!isEnterKey(event)) {
+    if (!window.utils.isEnterKey(event)) {
       return;
     }
 
@@ -55,7 +45,7 @@
   }
 
   function onCloseByEnter(event) {
-    if (isEnterKey(event)) {
+    if (window.utils.isEnterKey(event)) {
       closePhotoForm();
     }
   }

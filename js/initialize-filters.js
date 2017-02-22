@@ -2,7 +2,6 @@
 
 window.initializeFilters = (function () {
   var uploadFilterControls = document.querySelector('.upload-filter-controls');
-  var ENTER_KEY_CODE = 13;
 
   var filters = {
     none: 'none',
@@ -18,10 +17,12 @@ window.initializeFilters = (function () {
     uploadFilterControls.addEventListener('keydown', onSelectFilterByEnter);
 
     function onSelectFilterByEnter(event) {
-      if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
-        event.preventDefault();
-        applyFilter(event.target);
+      if (!window.utils.isEnterKey(event)) {
+        return;
       }
+
+      event.preventDefault();
+      applyFilter(event.target);
     }
 
     function onSelectFilter(event) {
@@ -33,7 +34,10 @@ window.initializeFilters = (function () {
         return;
       }
 
-      var filter = filters[element.parentNode.previousElementSibling.value];
+      var currentFilter = element.parentNode.previousElementSibling;
+      var filter = filters[currentFilter.value];
+
+      currentFilter.checked = true;
 
       if (!filter) {
         return;

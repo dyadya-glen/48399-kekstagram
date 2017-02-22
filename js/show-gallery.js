@@ -7,20 +7,17 @@ window.showGallery = (function () {
   var like = overlay.querySelector('.likes-count');
   var comments = overlay.querySelector('.comments-count');
 
-  var ENTER_KEY_CODE = 13;
-  var ESCAPE_KEY_CODE = 27;
-
   closeButton.addEventListener('click', onCloseGallery);
   closeButton.addEventListener('keydown', onCloseGalleryByEnter);
 
   function onCloseGalleryByEnter(event) {
-    if (event.keyCode && event.keyCode === ENTER_KEY_CODE) {
+    if (window.utils.isEnterKey) {
       closeGallery();
     }
   }
 
   function onCloseGalleryByEscape(event) {
-    if (event.keyCode && event.keyCode === ESCAPE_KEY_CODE) {
+    if (window.utils.isEscapeKey) {
       closeGallery();
     }
   }
