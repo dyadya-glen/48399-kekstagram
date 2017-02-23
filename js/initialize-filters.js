@@ -17,8 +17,10 @@ window.initializeFilters = (function () {
     uploadFilterControls.addEventListener('keydown', onSelectFilterByEnter);
 
     function onSelectFilterByEnter(event) {
+
       if (!window.utils.isEnterKey(event)) {
         return;
+
       }
 
       event.preventDefault();
