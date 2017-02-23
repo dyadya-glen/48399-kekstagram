@@ -11,13 +11,13 @@ window.showGallery = (function () {
   closeButton.addEventListener('keydown', onCloseGalleryByEnter);
 
   function onCloseGalleryByEnter(event) {
-    if (window.utils.isEnterKey) {
+    if (window.utils.isEnterKey(event)) {
       closeGallery();
     }
   }
 
   function onCloseGalleryByEscape(event) {
-    if (window.utils.isEscapeKey) {
+    if (window.utils.isEscapeKey(event)) {
       closeGallery();
     }
   }

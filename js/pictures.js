@@ -44,16 +44,12 @@
       content.querySelector('.picture-likes').textContent = picture.likes;
       content.querySelector('.picture-comments').textContent = picture.comments.length;
       content.addEventListener('click', function (evt) {
-        onOpen(evt, picture);
+        evt.preventDefault();
+        window.showGallery(picture);
       });
 
       fragment.appendChild(content);
     });
-
-    function onOpen(evt, picture) {
-      evt.preventDefault();
-      window.showGallery(picture);
-    }
 
     picturesContainer.appendChild(fragment);
   }
